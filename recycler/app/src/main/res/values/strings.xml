@@ -3,4 +3,7 @@
     <string name="hint_text">Message</string>
     <string name="hint_title">Title</string>
     <string name="add">Add Message</string>
+
+
+    <string name="added">The message %1$s was added successfully</string>
 </resources>
