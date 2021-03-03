@@ -11,7 +11,7 @@ interface WordDao {
     @Insert
     fun insert(word: Word)
 
-    @Query("SELECT * FROM word_table ORDER BY word ASC")
+    @Query("SELECT * FROM word_table ORDER BY name ASC")
     fun getAllWords(): LiveData<List<Word>>
 
     @Query("DELETE FROM word_table")
