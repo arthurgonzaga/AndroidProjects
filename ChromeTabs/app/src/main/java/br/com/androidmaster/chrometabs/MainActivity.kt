@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ActivityCompat
 import br.com.androidmaster.chrometabs.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     fun openChromeTab(){
         val url = "https://android-master.com.br/"
         val builder = CustomTabsIntent.Builder()
+        builder.setToolbarColor(ActivityCompat.getColor(this, R.color.purple_500))
         val customTab = builder.build()
         customTab.launchUrl(this, Uri.parse(url))
     }
