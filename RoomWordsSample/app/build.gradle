@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -45,9 +46,10 @@ dependencies {
 
 
     // Room components
-    implementation "androidx.persistence.room:runtime:$rootProject.roomVersion"
-    annotationProcessor "androidx.persistence.room:compiler:$rootProject.roomVersion"
-    androidTestImplementation "androidx.persistence.room:testing:$rootProject.roomVersion"
+    def room_version = "2.2.6"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     // Lifecycle components
     implementation "androidx.lifecycle:extensions:$rootProject.archLifecycleVersion"
