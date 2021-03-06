@@ -1,9 +1,10 @@
-package br.com.androidmaster.roomwordssample
+package br.com.androidmaster.roomwordssample.data.local.word
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import br.com.androidmaster.roomwordssample.data.model.Word
 
 @Database(entities = arrayOf(Word::class), version = 1, exportSchema = false)
 abstract class WordRoomDB: RoomDatabase() {
@@ -12,7 +13,7 @@ abstract class WordRoomDB: RoomDatabase() {
     companion object{
         private var INSTANCE: WordRoomDB? = null
 
-        fun getInstance(context: Context): WordRoomDB{
+        fun getInstance(context: Context): WordRoomDB {
             synchronized(this){
                 var instance = INSTANCE
                 if(instance == null){

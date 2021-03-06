@@ -1,7 +1,8 @@
-package br.com.androidmaster.roomwordssample
+package br.com.androidmaster.roomwordssample.viewmodels
 
 import androidx.lifecycle.*
-import kotlinx.coroutines.SupervisorJob
+import br.com.androidmaster.roomwordssample.data.local.word.WordRepository
+import br.com.androidmaster.roomwordssample.data.model.Word
 import kotlinx.coroutines.launch
 
 class WordViewModel(private val repository: WordRepository): ViewModel() {
@@ -12,6 +13,12 @@ class WordViewModel(private val repository: WordRepository): ViewModel() {
         repository.insert(word)
     }
 
+    fun isEmpty(): Boolean{
+        if(allWords.value != null){
+            if(allWords.value!!.size >= 0) return false
+        }
+        return true
+    }
 
 }
 

@@ -1,3 +1,7 @@
 <resources>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="normal_spacing">16dp</dimen>
+    <dimen name="medium_spacing">24dp</dimen>
+    <dimen name="cardElevation">8dp</dimen>
+    <dimen name="cardMaxElevation">12dp</dimen>
+    <dimen name="large_spacing">32dp</dimen>
 </resources>

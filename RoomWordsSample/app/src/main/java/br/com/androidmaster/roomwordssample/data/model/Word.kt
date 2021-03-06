@@ -1,4 +1,4 @@
-package br.com.androidmaster.roomwordssample
+package br.com.androidmaster.roomwordssample.data.model
 
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo

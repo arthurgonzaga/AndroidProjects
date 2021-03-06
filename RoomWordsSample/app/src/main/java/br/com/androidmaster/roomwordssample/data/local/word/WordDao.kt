@@ -1,9 +1,9 @@
-package br.com.androidmaster.roomwordssample
+package br.com.androidmaster.roomwordssample.data.local.word
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import br.com.androidmaster.roomwordssample.data.model.Word
 import kotlinx.coroutines.flow.Flow
 
 @Dao
