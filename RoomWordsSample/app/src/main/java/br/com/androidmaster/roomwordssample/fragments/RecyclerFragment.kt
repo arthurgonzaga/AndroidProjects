@@ -4,22 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.androidmaster.roomwordssample.R
+import br.com.androidmaster.roomwordssample.adapters.WordRecyclerAdapter
+import br.com.androidmaster.roomwordssample.data.model.Word
 import br.com.androidmaster.roomwordssample.viewmodels.WordViewModel
-import br.com.androidmaster.roomwordssample.viewmodels.WordViewModelFactory
-import br.com.androidmaster.roomwordssample.activities.MainActivity
 import br.com.androidmaster.roomwordssample.databinding.FragmentRecyclerBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RecyclerFragment : Fragment(){
+class RecyclerFragment : Fragment(), LifecycleObserver{
 
     lateinit var binding: FragmentRecyclerBinding
 
-    val viewModel: WordViewModel by activityViewModels{
-        WordViewModelFactory(MainActivity.application.repository)
-    }
+    private val viewModel: WordViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,17 +31,34 @@ class RecyclerFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentRecyclerBinding.inflate(inflater)
-        if(viewModel.isEmpty()){
-            binding.empty.visibility = View.VISIBLE
-        }
+
+
+
+
+        lifecycle.addObserver(this)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+        viewModel.allWords.observe(viewLifecycleOwner, Observer { list ->
+            initRecyclerView(list)
+            if(list.size > 0){
+                binding.empty.visibility = View.INVISIBLE
+            }else{
+                binding.empty.visibility = View.VISIBLE
+            }
+        })
         binding.fab.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+        lifecycle.removeObserver(this)
+    }
+
+    fun initRecyclerView(list: List<Word>){
+        binding.rvWords.adapter = WordRecyclerAdapter(list)
+        binding.rvWords.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvWords.adapter?.notifyDataSetChanged()
     }
 }
+
