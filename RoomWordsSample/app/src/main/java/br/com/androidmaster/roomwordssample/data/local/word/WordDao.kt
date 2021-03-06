@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface WordDao {
 
     @Insert
-    fun insert(word: Word)
+    suspend fun insert(word: Word)
 
     @Query("SELECT * FROM word_table ORDER BY name ASC")
     fun getAllWords(): Flow<List<Word>>
