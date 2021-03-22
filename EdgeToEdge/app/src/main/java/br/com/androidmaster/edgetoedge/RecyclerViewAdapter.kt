@@ -1,12 +1,10 @@
-package br.com.androidmaster.edgetoedge.adapters
+package br.com.androidmaster.edgetoedge
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import br.com.androidmaster.edgetoedge.R
 
 class RecyclerViewAdapter(val list: List<String>) : RecyclerView.Adapter<RecyclerViewAdapter.VH>(){
 
