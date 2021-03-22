@@ -1,27 +1,28 @@
-package br.com.androidmaster.edgetoedge.activities.main
+package br.com.androidmaster.edgetoedge
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import br.com.androidmaster.edgetoedge.R
-import br.com.androidmaster.edgetoedge.adapters.RecyclerViewAdapter
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
+        // Set the adapter and LayoutManager
         setUpRecyclerView()
+
+        // Enable Edge-to-edge
         setUpEdgeToEdge()
+
+        // CHANGES COLOR OF THE STATUS BAR
         setUpStatusBar()
     }
 
@@ -58,10 +59,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-
     fun setUpEdgeToEdge(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            // TODO: CHANGE STATUS COLOR FOR ANDROID 11
             window.setDecorFitsSystemWindows(false)
         }else{
             window.decorView.systemUiVisibility =
@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("InlinedApi")
     fun setUpStatusBar(): Int{
         when(getString(R.string.mode)){
             "Day" -> {
