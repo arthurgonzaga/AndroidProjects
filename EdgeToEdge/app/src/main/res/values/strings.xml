@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">EdgeToEdge</string>
+    <string name="app_name">Edge-to-edge</string>
+    <string name="mode" translatable="false">Day</string>
 </resources>
