@@ -55,4 +55,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun removeNotification(view: View) {
+        with(NotificationManagerCompat.from(this)){
+            // Remove the last notification
+            cancel(notificationId)
+        }
+    }
 }
