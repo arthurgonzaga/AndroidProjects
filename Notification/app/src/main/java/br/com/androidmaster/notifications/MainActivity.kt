@@ -1,5 +1,6 @@
 package br.com.androidmaster.notifications
 
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -61,5 +62,24 @@ class MainActivity : AppCompatActivity() {
             cancel(notificationId)
             notificationId--
         }
+    }
+
+    fun createNotification2(view: View) {
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(this, NotificationBroadcast::class.java)
+            .putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+            .let { intent ->
+            PendingIntent.getBroadcast(this, 0, intent, 0)
+        }
+        alarmManager.set(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + 3 * 1000,
+            alarmIntent
+        )
+    }
+
+
+    companion object{
+        const val EXTRA_NOTIFICATION_ID = "notificationId"
     }
 }
