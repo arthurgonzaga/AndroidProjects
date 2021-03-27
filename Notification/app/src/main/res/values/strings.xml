@@ -3,5 +3,11 @@
 
     <string name="CHANNEL_1_ID">channel_1_id</string>
     <string name="CHANNEL_2_ID">channel_2_id</string>
-    <string name="CHANNEL_3_ID">channel_3_id</string>
+
+    <string name="CHANNEL_1_NAME">Test</string>
+    <string name="CHANNEL_2_NAME">Another test</string>
+
+    <string name="CHANNEL_1_DESCRIPTION">Description for category 1</string>
+    <string name="CHANNEL_2_DESCRIPTION">Description for category 2</string>
+
 </resources>
