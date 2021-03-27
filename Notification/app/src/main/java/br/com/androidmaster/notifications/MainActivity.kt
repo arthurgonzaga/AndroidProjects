@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         with(NotificationManagerCompat.from(this)){
             // Remove the last notification
             cancel(notificationId)
+            notificationId--
         }
     }
 }
