@@ -12,5 +12,10 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+
+        <item name="fanColor1">@color/fanColor1</item>
+        <item name="fanColor2">@color/fanColor2</item>
+        <item name="fanColor3">@color/fanColor3</item>
     </style>
 </resources>
