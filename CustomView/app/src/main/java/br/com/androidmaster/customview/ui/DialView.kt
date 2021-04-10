@@ -4,10 +4,16 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
+import android.view.GestureDetector
+import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.withStyledAttributes
 import br.com.androidmaster.customview.R
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.min
+import kotlin.math.sin
 
 
 private const val RADIUS_OFFSET_LABEL = 60
@@ -45,6 +51,47 @@ class DialView @JvmOverloads constructor(
     private var fanSpeedMediumColor = 0;
     private var fanSpeedHighColor = 0;
 
+    private var initialized = false
+
+
+    // Gesture detector
+    private val mListener = object : GestureDetector.SimpleOnGestureListener(){
+        override fun onDown(e: MotionEvent?): Boolean {
+            Log.d("AGR", "x: ${e?.x}\ny: ${e?.y}")
+            Log.d("AGR", "height: $height\nwidth: $width")
+            Log.d("AGR", "radius: $radius")
+            return true
+        }
+
+        override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+            Log.i("AGR", "onScroll: ")
+            val radiusIndicator = radius + RADIUS_OFFSET_INDICATOR
+            // x = center + radius * cos(event.x)
+            // y = center + radius * sin(event.x)
+            val centerX = (width / 2).toFloat()
+            val centerY = (height / 2).toFloat()
+
+            val startX = centerX - radius
+
+            val topX = centerX
+
+            val endX = centerX + radius
+
+            val myX =  (e2!!.x/160 + pointPosition.x).toFloat()
+
+            pointPosition.apply {
+                x = centerX + radiusIndicator * cos(myX)
+                y = centerY + radiusIndicator * sin(myX)
+            }
+            if(myX in startX..endX){
+                invalidate()
+            }
+            return super.onScroll(e1, e2, distanceX, distanceY)
+        }
+    }
+
+    private val detector: GestureDetector = GestureDetector(context, mListener)
+
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         textAlign = Paint.Align.CENTER
@@ -63,6 +110,9 @@ class DialView @JvmOverloads constructor(
     }
 
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return detector.onTouchEvent(event)
+    }
 
     override fun performClick(): Boolean {
         if(super.performClick()) return true
@@ -80,25 +130,6 @@ class DialView @JvmOverloads constructor(
     }
 
 
-    private fun measureDimension(desiredSize: Int, measureSpec: Int): Int {
-        var result: Int
-        val specMode = MeasureSpec.getMode(measureSpec)
-        val specSize = MeasureSpec.getSize(measureSpec)
-        if (specMode == MeasureSpec.EXACTLY) {
-            result = specSize
-        } else {
-            result = desiredSize
-            if (specMode == MeasureSpec.AT_MOST) {
-                result = Math.min(result, specSize)
-            }
-        }
-        if (result < desiredSize) {
-            Log.e("ChartView", "The view is too small, the content might get cut")
-        }
-        return result
-    }
-
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         // Set dial background color to green if selection not off.
@@ -109,12 +140,25 @@ class DialView @JvmOverloads constructor(
             FanSpeed.HIGH -> fanSpeedHighColor
         }
         // Draw the dial.
-        canvas.drawCircle((width / 2).toFloat(), (height / 2).toFloat(), radius, paint)
+        val centerX = (width / 2).toFloat()
+        val centerY = (height / 2).toFloat()
+        canvas.drawCircle(centerX, centerY, radius, paint)
+
+
+        // DRAW TEST
+        paint.color = Color.RED
+        canvas.drawCircle(centerX - radius, centerY, 20.0f,paint)
+        canvas.drawCircle(centerX + radius, centerY, 20.0f,paint)
+        canvas.drawCircle(centerX, centerY - radius, 20.0f,paint)
+        canvas.drawCircle(centerX, centerY, 20.0f,paint)
 
         // Draw the indicator
         val indicatorRadius = radius + RADIUS_OFFSET_INDICATOR
-        pointPosition.computeXYForSpeed(fanSpeed, indicatorRadius)
+        if(!initialized){
+            pointPosition.computeXYForSpeed(fanSpeed, indicatorRadius)
+        }
         paint.color = Color.BLACK
+
         canvas.drawCircle(pointPosition.x, pointPosition.y, radius / 15, paint)
 
         // Draw the texts
@@ -127,10 +171,11 @@ class DialView @JvmOverloads constructor(
     }
 
     private fun PointF.computeXYForSpeed(pos: FanSpeed, radius: Float){
-
-        val startAngle = Math.PI * (9 / 8)
-        val angle = startAngle + pos.ordinal * (Math.PI / 4)
+        val startAngle = PI
+        val angle = startAngle + pos.ordinal * (PI / 4)
         x = (radius * Math.cos(angle)).toFloat() + width / 2
         y = (radius * Math.sin(angle)).toFloat() + height / 2
+
+        initialized=true
     }
 }
