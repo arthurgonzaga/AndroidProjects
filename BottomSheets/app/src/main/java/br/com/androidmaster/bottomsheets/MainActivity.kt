@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     fun openBottomSheetDialog(view: View) {
         supportFragmentManager.let {
-            TestBottomSheetFragment.newInstance(this).apply {
+            TestBottomSheetFragment.newInstance().apply {
                 show(it, tag)
             }
         }
