@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import br.com.androidmaster.bottomsheets.databinding.BottomSheetBinding
+import br.com.androidmaster.bottomsheets.util.KeyboardUtils
 import com.camerash.toggleedittextview.ToggleEditTextView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -72,10 +73,21 @@ class TestBottomSheetFragment() : BottomSheetDialogFragment(){
 
         textView?.textView?.setOnClickListener {
             textView.setEditing(true, true)
+            textView.editText.requestFocus()
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            KeyboardUtils.toggleKeyboardVisibility(requireContext())
+
         }
 
         textView?.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE)
         textView?.editText?.isSingleLine = false;
+
+
+        KeyboardUtils.addKeyboardToggleListener(activity){ isVisible ->
+            if(isVisible == false){
+                textView?.setEditing(false, true)
+            }
+        }
 
         BottomSheetBehavior.from(bottomSheet).addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
