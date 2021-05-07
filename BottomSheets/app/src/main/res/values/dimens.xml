@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="textViewColapsed">100dp</dimen>
     <dimen name="peekHeight_small">220dp</dimen>
     <dimen name="peekHeight_medium">250dp</dimen>
     <dimen name="peekHeight_large">350dp</dimen>
