@@ -4,6 +4,7 @@ import android.animation.LayoutTransition
 import android.app.Activity
 import android.app.Dialog
 import android.os.Bundle
+import android.os.Handler
 import android.text.InputType
 import android.util.DisplayMetrics
 import android.util.Log
@@ -19,6 +20,8 @@ import com.camerash.toggleedittextview.ToggleEditTextView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.util.*
+import kotlin.concurrent.schedule
 import kotlin.properties.Delegates
 
 
@@ -113,13 +116,23 @@ class TestBottomSheetFragment() : BottomSheetDialogFragment(){
 
         BottomSheetBehavior.from(bottomSheet).addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {}
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState){
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+
+                        var lp = textView?.layoutParams
+                        lp?.height = resources.getDimension(R.dimen.textViewColapsed).toInt()
+                        textView?.layoutParams = lp
+                    }
+                }
+            }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val diff = currentPosition - slideOffset
                 if (diff != 0f) {
                     if (diff < 0) {
                         Log.d(TAG, "onSlide: UP")
+                        textView?.setMaxLines(1000)
                         textView4?.gravity = Gravity.BOTTOM
 
 
@@ -129,9 +142,10 @@ class TestBottomSheetFragment() : BottomSheetDialogFragment(){
                     } else {
                         Log.d(TAG, "onSlide: DOWN")
 
-                        textView4?.gravity = Gravity.TOP
+                        Timer("onSlideDown",false).schedule(300){
+                            textView4?.gravity = Gravity.TOP
+                        }
 
-                        //container
                         var lp = textView?.layoutParams
                         lp?.height = resources.getDimension(R.dimen.textViewColapsed).toInt()
                         textView?.layoutParams = lp
