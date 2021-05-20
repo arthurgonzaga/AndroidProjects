@@ -11,7 +11,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.android_master.composebasics.ui.theme.ComposeBasicsTheme
@@ -22,7 +24,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApp{
-                
+                NewsStory()
             }
         }
     }
@@ -46,12 +48,21 @@ fun NewsStory() {
         Image(
             painter = painterResource(R.drawable.header),
             contentDescription = null,
-            modifier = Modifier.clip(Shapes.medium)
+            modifier = Modifier.clip(Shapes.medium).height(180.dp).fillMaxWidth(),
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text("A day in Shark Fin Cove")
-        Text("Davenport, California")
-        Text("December 2018")
+        Text("A day wandering through the sandhills " +
+                "in Shark Fin Cove, and a few of the " +
+                "sights I saw",
+
+            style = MaterialTheme.typography.h6,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(Modifier.height(8.dp))
+        Text("Davenport, California", style = MaterialTheme.typography.body2)
+        Text("December 2018", style = MaterialTheme.typography.body2)
     }
 }
 
