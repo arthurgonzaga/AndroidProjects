@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.Gravity
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -78,21 +83,12 @@ fun NewsStory() {
 
 
 @Composable
-fun ListOfContent(names: List<String> = listOf("alo", "teste","top")) {
+fun ListOfContent(names: List<String> = List(900){"Hey #$it"}) {
 
     val counterState = remember{ mutableStateOf(0) }
 
     Column(Modifier.fillMaxHeight()){
-        Column(Modifier.weight(1f)){
-            for(name in names){
-                Text(name,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp, horizontal = 24.dp))
-                Divider(color = Color.LightGray,
-                    modifier = Modifier.padding(horizontal = 24.dp))
-            }
-        }
+        NameList(names = names, modifier = Modifier.weight(1f))
 
         Row(Modifier.fillMaxWidth(), Arrangement.Center){
             CounterButton(
@@ -106,8 +102,44 @@ fun ListOfContent(names: List<String> = listOf("alo", "teste","top")) {
 }
 
 @Composable
+fun NameList(names: List<String>, modifier: Modifier) {
+    LazyColumn(modifier = modifier){
+        items(items = names){ name ->
+            SelectableText(name)
+            Divider(color = Color.LightGray, modifier = Modifier.padding(horizontal = 16.dp))
+        }
+    }
+}
+
+@Composable
+fun SelectableText(name: String) {
+    val isSelected = remember{ mutableStateOf(false) }
+    val backgroundColor by animateColorAsState(if(isSelected.value) Color.Black else Color.Transparent)
+
+    Text(
+        text= name,
+        modifier= Modifier
+            .padding(16.dp)
+            .background(color = backgroundColor)
+            .clickable(onClick = { isSelected.value = !isSelected.value }))
+}
+
+
+@Composable
 fun CounterButton(count: Int, onClick: (newValue: Int)-> Unit) {
-    Button(modifier= Modifier.padding(24.dp), onClick = { onClick(count+1) }) {
+    Button(
+        modifier= Modifier.padding(24.dp),
+        onClick = {
+            onClick(count+1)
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor =
+            if(count >= 5)
+                MaterialTheme.colors.secondary
+            else
+                MaterialTheme.colors.primary
+        )
+    ) {
         Text("You've clicked in this button $count times")
     }
 }
