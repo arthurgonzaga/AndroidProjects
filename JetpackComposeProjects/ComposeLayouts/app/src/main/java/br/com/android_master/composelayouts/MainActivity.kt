@@ -5,13 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -59,9 +58,11 @@ fun MyApp(content: @Composable ()-> Unit) {
 }
 
 @Composable
-fun ListOfCards(paddingValues: PaddingValues) {
+fun ListOfCards(scrollState: LazyListState ,paddingValues: PaddingValues) {
 
-    val scrollState = rememberLazyListState()
+
+
+    scrollState.isScrollInProgress
 
     LazyColumn(
         state = scrollState,
@@ -138,12 +139,15 @@ fun CustomImage() {
 
 @Composable
 fun LayoutCodeLab() {
+    val scrollState = rememberLazyListState()
 
     val systemUiController = rememberSystemUiController()
     val darkColor = MaterialTheme.colors.isLight
     SideEffect {
         systemUiController.setStatusBarColor(Color.Transparent, darkIcons = darkColor)
     }
+
+    val elevationState = animateDpAsState(if(scrollState.firstVisibleItemIndex != 0) 8.dp else 0.dp)
 
     Scaffold(
         Modifier.statusBarsPadding(),
@@ -157,12 +161,12 @@ fun LayoutCodeLab() {
                              Icon(Icons.Filled.Share, contentDescription = "Share")
                          }
                 },
-                elevation = 0.dp,
+                elevation = elevationState.value,
                 backgroundColor = MaterialTheme.colors.background,
             )
         },
     ){
-        ListOfCards(it)
+        ListOfCards(scrollState, it)
     }
 }
 
