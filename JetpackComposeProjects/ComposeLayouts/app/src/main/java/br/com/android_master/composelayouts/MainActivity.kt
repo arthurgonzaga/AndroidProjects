@@ -9,6 +9,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -55,14 +58,37 @@ fun MyApp(content: @Composable ()-> Unit) {
     }
 }
 
+@Composable
+fun ListOfCards(paddingValues: PaddingValues) {
+
+    val scrollState = rememberLazyListState()
+
+    LazyColumn(
+        state = scrollState,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        items(50){
+            PhotographerCard(
+                Modifier.padding(paddingValues = paddingValues),
+                title = "Title",
+                description = "Thanks for going through the Layouts codelab #$it"
+            )
+        }
+    }
+}
 
 @Composable
-fun PhotographerCard(modifier: Modifier) {
+fun PhotographerCard(
+    modifier: Modifier = Modifier,
+    title: String = "Title",
+    description: String = "description"
+) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .padding(18.dp)
+            .padding(horizontal = 18.dp)
             .clip(MaterialTheme.shapes.medium)
             .clickable { }
             .fillMaxWidth()
@@ -71,9 +97,9 @@ fun PhotographerCard(modifier: Modifier) {
         CustomImage()
 
         Column(Modifier.padding(start= 16.dp)){
-            Text("Alfred Sisley", fontWeight = FontWeight.Bold)
+            Text(title, fontWeight = FontWeight.Bold)
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text("Thanks for going through the Layouts codelab", style = MaterialTheme.typography.body2)
+                Text(description, style = MaterialTheme.typography.body2)
             }
         }
     }
@@ -136,7 +162,7 @@ fun LayoutCodeLab() {
             )
         },
     ){
-        PhotographerCard(Modifier.padding(paddingValues = it))
+        ListOfCards(it)
     }
 }
 
