@@ -3,24 +3,31 @@ package br.com.android_master.composelayouts
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import br.com.android_master.composelayouts.ui.theme.ComposeLayoutsTheme
+import coil.transform.CircleCropTransformation
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -32,17 +39,26 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ComposeLayoutsTheme {
-                ProvideWindowInsets {
-                    LayoutCodeLab()
-                }
+            MyApp {
+                LayoutCodeLab()
             }
         }
     }
 }
 
 @Composable
+fun MyApp(content: @Composable ()-> Unit) {
+    ComposeLayoutsTheme {
+        ProvideWindowInsets {
+            content()
+        }
+    }
+}
+
+
+@Composable
 fun PhotographerCard(modifier: Modifier) {
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -52,22 +68,46 @@ fun PhotographerCard(modifier: Modifier) {
             .fillMaxWidth()
             .padding(12.dp)
     ){
-        Surface(
-            modifier = Modifier.size(50.dp),
-            shape = CircleShape,
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.2f)
-        ) {
+        CustomImage()
 
-        }
         Column(Modifier.padding(start= 16.dp)){
             Text("Alfred Sisley", fontWeight = FontWeight.Bold)
-            // LocalContentAlpha is defining opacity level of its children
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text("Thanks for going through the Layouts codelab", style = MaterialTheme.typography.body2)
             }
         }
     }
 
+}
+
+@Composable
+fun CustomImage() {
+
+    val colorLoading = MaterialTheme.colors.onSurface.copy(alpha = 0.2f)
+    val colorSuccess = MaterialTheme.colors.background
+
+
+    val painter = rememberCoilPainter(
+        "https://developer.android.com/images/brand/Android_Robot.png",
+        fadeIn = true
+    )
+
+    val circleBackgroundColor = animateColorAsState(
+        if(painter.loadState  is ImageLoadState.Success) colorSuccess else colorLoading
+    )
+
+
+    Surface(
+        modifier = Modifier.size(50.dp),
+        shape = CircleShape,
+        color = circleBackgroundColor.value
+    ) {
+        Image(
+            modifier = Modifier.scale(0.85f),
+            painter = painter,
+            contentDescription = "android-logo",
+        )
+    }
 }
 
 @Composable
@@ -94,7 +134,7 @@ fun LayoutCodeLab() {
                 elevation = 0.dp,
                 backgroundColor = MaterialTheme.colors.background,
             )
-        }
+        },
     ){
         PhotographerCard(Modifier.padding(paddingValues = it))
     }
