@@ -45,8 +45,12 @@ import kotlin.random.Random
 @Composable
 fun TodoScreen(
     items: List<TodoItem>,
+    currentlyEditing: TodoItem?,
     onAddItem: (TodoItem) -> Unit,
-    onRemoveItem: (TodoItem) -> Unit
+    onRemoveItem: (TodoItem) -> Unit,
+    onStartEdit: (TodoItem) -> Unit,
+    onEditItemChange: (TodoItem) -> Unit,
+    onEditDone: () -> Unit
 ) {
     Column {
         TodoItemInputBackground(elevate = true, modifier = Modifier.fillMaxWidth()) {
@@ -56,12 +60,21 @@ fun TodoScreen(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(top = 8.dp)
         ) {
-            items(items = items) { item ->
-                TodoRow(
-                    todo = item,
-                    onItemClicked = { onRemoveItem(item) },
-                    modifier = Modifier.fillParentMaxWidth()
-                )
+            items(items = items) { todo ->
+                if(todo.id == currentlyEditing?.id){
+                    TodoItemInlineEditor(
+                        item = currentlyEditing,
+                        onEditItemChange = onEditItemChange,
+                        onEditDone = onEditDone,
+                        onRemoveItem = { onRemoveItem(todo) }
+                    )
+                }else{
+                    TodoRow(
+                        todo = todo,
+                        onItemClicked = { onStartEdit(it) },
+                        modifier = Modifier.fillParentMaxWidth()
+                    )
+                }
             }
         }
 
@@ -119,7 +132,7 @@ fun PreviewTodoScreen() {
         TodoItem("Apply state", TodoIcon.Done),
         TodoItem("Build dynamic UIs", TodoIcon.Square)
     )
-    TodoScreen(items, {}, {})
+    TodoScreen(items, null, {}, {}, {}, {}, {})
 }
 
 @Composable
@@ -128,6 +141,20 @@ fun TodoInputTextField(text: String, onTextChange: (String) -> Unit, modifier: M
     TodoInputText(text, onTextChange, modifier, onImeAction)
 }
 
+@Composable
+fun TodoItemInlineEditor(
+    item: TodoItem,
+    onEditItemChange: (TodoItem) -> Unit,
+    onEditDone: () -> Unit,
+    onRemoveItem: () -> Unit
+) = TodoItemInput(
+    text = item.task,
+    onTextChange = { onEditItemChange(item.copy(task = it)) },
+    icon = item.icon,
+    onIconChange = { onEditItemChange(item.copy(icon = it)) },
+    submit = onEditDone,
+    iconsVisible = true
+)
 
 @Composable
 fun TodoItemEntryInput(onItemComplete: (TodoItem) -> Unit) {

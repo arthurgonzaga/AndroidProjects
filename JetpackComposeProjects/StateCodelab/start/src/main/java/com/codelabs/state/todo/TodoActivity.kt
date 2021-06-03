@@ -47,8 +47,12 @@ class TodoActivity : AppCompatActivity() {
 
         TodoScreen(
             items = viewModel.todoItems,
+            currentlyEditing = viewModel.currentEditItem,
             onAddItem = viewModel::addItem,
-            onRemoveItem = viewModel::removeItem
+            onRemoveItem = viewModel::removeItem,
+            onEditItemChange = viewModel::onEditItemChange,
+            onStartEdit = viewModel::onEditItemSelected,
+            onEditDone = viewModel::onEditDone,
         )
     }
 }
