@@ -14,12 +14,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
-                }
+            MyApp {
+                LoginScreen()
             }
+        }
+    }
+}
+
+@Composable
+fun MyApp(content: @Composable () -> Unit) {
+    LoginAppTheme {
+        Surface(color = MaterialTheme.colors.background) {
+            content()
         }
     }
 }
