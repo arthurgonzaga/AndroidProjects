@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.android_master.loginapp.ui.theme.LoginAppTheme
+import br.com.android_master.loginapp.ui.theme.Util.hideKeyboard
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -33,8 +34,16 @@ class MainActivity : ComponentActivity() {
             MyApp {
                 if(currentUser == null){
                     LoginScreen(
-                        onLoginButtonClick = {},
-                        onRegisterButtonClick = {}
+                        onRegisterButtonClick= {
+                            hideKeyboard(this)
+
+                            /*TODO: register user*/
+                        },
+                        onLoginButtonClick = {
+                            hideKeyboard(this)
+
+                            /*TODO: login user*/
+                        }
                     )
                 }
             }

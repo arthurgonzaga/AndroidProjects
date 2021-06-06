@@ -1,5 +1,6 @@
 package br.com.android_master.loginapp
 
+import android.content.Context
 import android.util.Patterns
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -8,9 +9,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.android_master.loginapp.ui.theme.Util.hideKeyboard
 
 @ExperimentalAnimationApi
 @Composable
@@ -88,7 +89,7 @@ fun LoginContent(
             modifier = Modifier.align(Alignment.End)){
             MyButton(
                 text = "Registrar",
-                boolean= login,
+                isUnselected= login,
                 onTextButtonClick = { login = !login },
                 onButtonClick = {
                     nameHasError = name.isBlank()
@@ -112,7 +113,7 @@ fun LoginContent(
             Spacer(Modifier.width(16.dp))
             MyButton(
                 text = "Login",
-                boolean= !login,
+                isUnselected= !login,
                 onTextButtonClick = { login = !login },
                 onButtonClick = {
                     emailHasError =
@@ -138,11 +139,11 @@ fun LoginContent(
 @Composable
 fun MyButton(
     text: String,
-    boolean: Boolean = true,
+    isUnselected: Boolean = true,
     onTextButtonClick: ()->Unit,
     onButtonClick: ()->Unit
 ) {
-    if(boolean){
+    if(isUnselected){
         TextButton(
             onClick = onTextButtonClick
         ){
