@@ -21,6 +21,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.ActionCodeSettings
+
+
+
 
 @ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {
@@ -42,14 +46,13 @@ class MainActivity : ComponentActivity() {
             MyApp {
                 var loggedIn by remember{ mutableStateOf(currentUser != null) }
 
+
                 if(!loggedIn){
                     LoginScreen(
                         onRegisterButtonClick= { user ->
                             hideKeyboard(this)
 
-                            register(user){
-                                loggedIn = it
-                            }
+                            register(user)
                         },
                         onLoginButtonClick = { user ->
                             hideKeyboard(this)
@@ -61,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }else{
                     UserScreen(
-                        currentUser= currentUser,
+                        currentUser= currentUser!!,
                         onLogoutButtonClick = {
                             FirebaseAuth.getInstance().signOut();
                             loggedIn = false
@@ -73,7 +76,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    fun register(user: User, updateUI:(loggedIn: Boolean) -> Unit){
+    fun register(user: User){
         auth.createUserWithEmailAndPassword(user.email, user.password)
             .addOnCompleteListener(this@MainActivity) { task ->
                 if (task.isSuccessful) {
@@ -85,13 +88,36 @@ class MainActivity : ComponentActivity() {
                         .Builder().setDisplayName(user.name).build()
                     currentUser!!.updateProfile(userProfileChangeRequest)
 
-                    // update the UI
-                    login(user, updateUI)
+
+                    // send verification email
+                    sendVerificationEmail()
+
                 } else {
                     Toast.makeText(baseContext, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
-                    updateUI(false)
                 }
+        }
+    }
+
+    fun sendVerificationEmail(){
+        val url = "http://www.loginapp.com.br/verify?uid=${currentUser!!.uid}"
+        val actionCodeSettings = ActionCodeSettings.newBuilder()
+            .setUrl(url)
+            .setAndroidPackageName("br.com.android_master.loginapp", false, null)
+            .build()
+
+        currentUser?.sendEmailVerification(/* TODO: actionCodeSettings */)?.addOnCompleteListener { task ->
+            if(task.isSuccessful){
+                Toast.makeText(
+                    this,
+                    "Enviamos um email de verificação",
+                    Toast.LENGTH_LONG).show()
+            }else{
+                Toast.makeText(
+                    this,
+                    "Erro ao enviar o email de verificação",
+                    Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -100,7 +126,15 @@ class MainActivity : ComponentActivity() {
         auth.signInWithEmailAndPassword(user.email, user.password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    currentUser = auth.currentUser
+                    currentUser = if(auth.currentUser?.isEmailVerified == true) auth.currentUser else null
+
+                    if(currentUser == null){
+                        Toast.makeText(
+                            this,
+                            "Verifique seu e-mail",
+                            Toast.LENGTH_LONG).show()
+                        return@addOnCompleteListener
+                    }
                     updateUI(true)
                 } else {
                     Toast.makeText(baseContext, "Authentication failed.",
