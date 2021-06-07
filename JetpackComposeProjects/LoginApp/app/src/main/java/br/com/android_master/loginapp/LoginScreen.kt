@@ -11,13 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.android_master.loginapp.ui.model.User
 import br.com.android_master.loginapp.ui.theme.Util.hideKeyboard
 
 @ExperimentalAnimationApi
 @Composable
 fun LoginScreen(
-    onLoginButtonClick: ()-> Unit= {},
-    onRegisterButtonClick: ()-> Unit= {},
+    onLoginButtonClick: (user: User)-> Unit= {},
+    onRegisterButtonClick: (user: User)-> Unit= {},
 ) {
     Scaffold(
         topBar = {
@@ -33,8 +34,8 @@ fun LoginScreen(
 @ExperimentalAnimationApi
 @Composable
 fun LoginContent(
-    onLoginButtonClick: ()-> Unit,
-    onRegisterButtonClick: ()-> Unit
+    onLoginButtonClick: (user: User)-> Unit,
+    onRegisterButtonClick: (user: User)-> Unit
 ) {
 
     var name by remember { mutableStateOf("") }
@@ -106,7 +107,13 @@ fun LoginContent(
                         !emailHasError and
                         !passwordHasError){
 
-                        onRegisterButtonClick()
+                        onRegisterButtonClick(
+                            User(
+                                name = name,
+                                email = email,
+                                password = password
+                            )
+                        )
                     }
                 }
             )
@@ -128,7 +135,12 @@ fun LoginContent(
                         !emailHasError and
                         !passwordHasError){
 
-                        onLoginButtonClick()
+                        onLoginButtonClick(
+                            User(
+                                email = email,
+                                password = password
+                            )
+                        )
                     }
                 }
             )
