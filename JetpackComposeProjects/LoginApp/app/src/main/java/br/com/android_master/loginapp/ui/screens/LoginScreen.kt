@@ -1,6 +1,5 @@
 package br.com.android_master.loginapp
 
-import android.content.Context
 import android.util.Patterns
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -11,8 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.android_master.loginapp.ui.model.User
-import br.com.android_master.loginapp.ui.theme.Util.hideKeyboard
+import br.com.android_master.loginapp.data.model.User
 
 @ExperimentalAnimationApi
 @Composable
